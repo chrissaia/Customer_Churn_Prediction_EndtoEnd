@@ -1,5 +1,5 @@
-churn_venv
-.churn_venv
+churn_venv/
+.churn_venv/
 
-venv
-.venv
+venv/
+.venv/
