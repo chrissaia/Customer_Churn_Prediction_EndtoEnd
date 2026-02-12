@@ -2,16 +2,18 @@ import mlflow.sklearn
 import pandas as pd
 from xgboost import XGBClassifier
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score, recall_score, f1_score, precision_score, auc
+from sklearn.metrics import accuracy_score, recall_score, f1_score, precision_score, roc_auc_score
 import time
 
 
-def train_model(df: pd.DataFrame, target_col: str):
+def train_model(df: pd.DataFrame, target_col: str, params: dict):
     '''
     Trains XGBoost model and tracks performance metrics using MLFlow
 
     :param df: dataframe containing training data
     :param target_col:
+    :param params: dictionary containing parameters for XGBoost model
+    :return: model, metrics, proba, preds
     '''
 
     X = df.drop(columns=target_col)
@@ -21,44 +23,24 @@ def train_model(df: pd.DataFrame, target_col: str):
         X, y, test_size=0.2, random_state=42
     )
 
-    estimators = 300
+    model = XGBClassifier(**params)
 
-    model = XGBClassifier(
-        n_estimators=estimators,
-        learning_rate=0.1,
-        max_depth=6,
-        random_state=42,
-        n_jobs=-1,
-        eval_metric="logloss"
-    )
+    # Train model
+    start_train = time.time()
+    model.fit(X_train, y_train)
+    train_time = time.time() - start_train
 
-    with mlflow.start_run():
-        # Train model
-        start_train = time.time()
-        model.fit(X_train, y_train)
-        train_time = time.time() - start_train
+    proba = model.predict_proba(X_test)[:, 1]  # Outputs two probabilities for each customer
+    preds = (proba >= 0.35).astype(int)  # Makes the prediction based on those probabilities
 
-        preds = model.predict(X_test)
-        acc = accuracy_score(y_test, preds)
-        rec = recall_score(y_test, preds)
-        f1 = f1_score(y_test, preds)
-        precision = precision_score(y_test, preds)
-        auc_score = auc(y_test, preds)
+    metrics = {
+        "train_time": train_time,
+        "accuracy": accuracy_score(y_test, preds),
+        "precision": precision_score(y_test, preds, pos_label=1),
+        "recall": recall_score(y_test, preds, pos_label=1),
+        "f1": f1_score(y_test, preds, pos_label=1),
+        "roc_auc": roc_auc_score(y_test, proba),
+    }
 
+    return model, metrics, proba, preds
 
-        # Log params, metrics, and model
-        mlflow.log_param("n_estimators", estimators)
-        mlflow.log_metric("train_time", train_time)
-        mlflow.log_metric("accuracy", acc)
-        mlflow.log_metric("precision", precision)
-        mlflow.log_metric("recall", rec)
-        mlflow.log_metric("f1", f1)
-        mlflow.log_metric("roc_auc", auc_score)
-
-        mlflow.xgboost.log_model(model, "model")
-
-        # Log dataset so it shows in MLflow UI
-        train_ds = mlflow.data.from_pandas(df, source="training_data")
-        mlflow.log_input(train_ds, context="training")
-
-        print(f"Model trained. Accuracy: {acc:.4f}, Recall: {rec:.4f}")

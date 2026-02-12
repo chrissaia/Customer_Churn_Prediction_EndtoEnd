@@ -54,7 +54,7 @@ def oneHotEncoder(df: pd.DataFrame, columns: list[str]) -> pd.DataFrame:
     return df
 
 
-def build_features(df: pd.DataFrame) -> pd.DataFrame:
+def build_features(df: pd.DataFrame, target_col: str) -> pd.DataFrame:
     """
     Apply complete feature engineering pipeline for training data.
 
@@ -90,7 +90,7 @@ def build_features(df: pd.DataFrame) -> pd.DataFrame:
         df[bool_cols] = df[bool_cols].astype(int)
 
     # Fill NaNs
-    print(f"Converting booleans to integers")
+    print(f"Filling missing values")
     df = df.fillna(0)
 
     print(f" Feature engineering complete: {df.shape[1]} final features")
