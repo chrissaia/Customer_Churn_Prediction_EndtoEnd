@@ -1,7 +1,11 @@
 kagglehub[pandas-datasets]
 pandas
 numpy
+torch
+torchvision
 scikit-learn
+xgboost
+lightgbm
 mlflow
 fastapi
 uvicorn
@@ -10,3 +14,5 @@ python-dotenv
 joblib
 great-expectations
 pytest
+seaborn
+optuna
