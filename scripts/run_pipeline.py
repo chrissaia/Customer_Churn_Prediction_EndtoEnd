@@ -218,6 +218,8 @@ def run(args: argparse.Namespace) -> None:
         for k, v in metrics.items():
             mlflow.log_metric(k, float(v))
 
+        # log date and time
+
         # Summary artifact
         summary = {
             "metrics": metrics,
