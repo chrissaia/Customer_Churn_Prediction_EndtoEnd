@@ -1,0 +1,14 @@
+artifact_uri: file:///Users/christophersaia/IDE/PycharmProjects/Churn Model End-to-End/mlruns/241478715816179234/bfefa28537bc4ab3ac1743cae3122857/artifacts
+end_time: 1770900477269
+entry_point_name: ''
+experiment_id: '241478715816179234'
+lifecycle_stage: active
+run_id: bfefa28537bc4ab3ac1743cae3122857
+run_name: victorious-cow-712
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1770900472038
+status: 3
+tags: []
+user_id: christophersaia

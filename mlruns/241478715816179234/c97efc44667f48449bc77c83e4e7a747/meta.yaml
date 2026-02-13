@@ -1,0 +1,14 @@
+artifact_uri: file:///Users/christophersaia/IDE/PycharmProjects/Churn Model End-to-End/mlruns/241478715816179234/c97efc44667f48449bc77c83e4e7a747/artifacts
+end_time: 1770900067576
+entry_point_name: ''
+experiment_id: '241478715816179234'
+lifecycle_stage: active
+run_id: c97efc44667f48449bc77c83e4e7a747
+run_name: skittish-grouse-687
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1770900067523
+status: 4
+tags: []
+user_id: christophersaia
