@@ -13,6 +13,7 @@ import json
 import logging
 from pathlib import Path
 from typing import Any, Dict, Optional
+import get_mlrrun_metrics
 
 import mlflow
 import mlflow.sklearn
@@ -197,7 +198,7 @@ def run(args: argparse.Namespace) -> None:
             )
 
             log.info("Running Optuna: trials=%d cv_splits=%d", args.tune_trials, args.tune_cv_splits)
-            best_params = tune_model(X_train, y_train, n_trials=args.tune_trials, cv_splits=args.tune_cv_splits)
+            best_params = tune_model(X_train, y_train, n_trials=args.tune_trials, cv_splits=args.tune_cv_splits, seed=args.seed)
 
             # Merge + log best params
             params.update(best_params)
@@ -240,10 +241,14 @@ def run(args: argparse.Namespace) -> None:
 
         log.info("Done.")
 
+    if args.past_models:
+        get_mlrrun_metrics.get_mlrrun_metrics()
+
+
 
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description="Telco churn pipeline (XGBoost + MLflow)")
-    p.add_argument("--input", type=str, required=True)
+    p.add_argument("--input", type=str, default="data/raw/Telco-Customer-Churn.csv")
     p.add_argument("--target", type=str, default="Churn")
     p.add_argument("--threshold", type=float, default=0.35)
     p.add_argument("--test_size", type=float, default=0.2)
@@ -251,11 +256,14 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--mlflow_uri", type=str, default=None)
     p.add_argument("--params_json", type=str, default=None)
     p.add_argument("--save_processed", action="store_true")
-    p.add_argument("--skip_validation", action="store_true")
+    p.add_argument("--skip_validation", action="store_true", default=True)
     p.add_argument("--verbose", action="store_true")
+    p.add_argument("--past_models", action="store_true", default=False)
+
 
     # tuning flags
     p.add_argument("--tune", action="store_true", help="Run Optuna tuning on train split (no leakage)")
+    p.add_argument("--seed", type=int, default=42, help="Random seed for tuning model")
     p.add_argument("--tune_trials", type=int, default=30, help="Number of Optuna trials")
     p.add_argument("--tune_cv_splits", type=int, default=3, help="CV folds for Optuna tuning")
 

@@ -3,7 +3,7 @@ from sklearn.model_selection import cross_val_score, StratifiedKFold
 from xgboost import XGBClassifier
 import time
 
-def tune_model(X, y, n_trials: int = 40, cv_splits: int = 3):
+def tune_model(X, y, n_trials: int = 40, cv_splits: int = 3, seed: int = 42):
     """
     Tunes XGBoost model to find best hyperparameters (recall).
 
@@ -12,7 +12,7 @@ def tune_model(X, y, n_trials: int = 40, cv_splits: int = 3):
     :return: dict of best params
     """
 
-    cv = StratifiedKFold(n_splits=cv_splits, shuffle=True, random_state=42)  # stratified CV for imbalanced churn
+    cv = StratifiedKFold(n_splits=cv_splits, shuffle=True, random_state=seed)  # stratified CV for imbalanced churn
 
     def objective(trial):
         scale_pos_weight = (y == 0).sum() / max((y == 1).sum(), 1)  # handle imbalance
