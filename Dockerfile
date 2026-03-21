@@ -1,5 +1,5 @@
 # this specifies the base image that the build will extend.
-FROM python:3.13-slim
+FROM python:3.11-slim
 WORKDIR /src/app/
 
 # Install the application dependencies
