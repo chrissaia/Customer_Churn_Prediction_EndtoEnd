@@ -28,6 +28,7 @@ ENV PYTHONUNBUFFERED=1 \
 # sets configuration on the image that indicates a port the image would like to expose.
 EXPOSE 8080
 
+
 # Setup an app user so the container doesn't run as the root user
 RUN useradd app
 # sets the default user for all subsequent instructions.
