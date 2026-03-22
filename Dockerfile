@@ -1,12 +1,13 @@
 # this specifies the base image that the build will extend.
 FROM python:3.11-slim
-WORKDIR /src/app/
+WORKDIR /app
 
 # Install the application dependencies
-COPY requirements.txt ./
+COPY requirements.txt .
+
 RUN pip install --upgrade pip \
     && pip install --no-cache-dir -r requirements.txt \
-    && pip apt-get clean && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 
 # tells the builder to copy all files from the host and put them into the container imagw
